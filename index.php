@@ -12,7 +12,7 @@ function adminer_object() {
 	
 	$adminer->plugins = [// specify enabled plugins here
       new AdminerDumpXml(),
-      new AdminerCopy(),
+      // new AdminerCopy(),
       new AdminerDisplayForeignKeyName(),
       // new AdminerDesigns(),
       // new AdminerThemeSwitcher(),
