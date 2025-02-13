@@ -340,10 +340,10 @@ class AdminerPlugin extends Adminer {
 		return $this->_applyPlugin(__FUNCTION__, $args);
 	}
 
-	function editInput($table, $field, $attrs, $value) {
+	/*function editInput($table, $field, $attrs, $value) {
 		$args = func_get_args();
 		return $this->_applyPlugin(__FUNCTION__, $args);
-	}
+	}*/
 
 	function editHint($table, $field, $value) {
 		$args = func_get_args();
