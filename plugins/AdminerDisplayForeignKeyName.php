@@ -91,6 +91,12 @@ class AdminerDisplayForeignKeyName
                 }
             }
         }
+
+        if (!function_exists('is_url')) {
+            function is_url($val) {
+                return preg_match('~^[-a-z0-9+.]+://~', $val);
+            }
+        }
         
         return ($link ? "<a href='" . h($link) . "'" . (is_url($link) ? " rel='noreferrer'" : "") . ">$return</a>" : $return);
     }
