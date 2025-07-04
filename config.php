@@ -1,6 +1,7 @@
 <?php
 return [
-	"colorVariant" => "blue",
+    "colorVariant" => "blue", // blue, red, green
+    'colorMode' => 'auto', // light, dark, auto
     "navigationMode" => "dual",
     "preferSelection" => true,
     "recordsPerPage" => 100,

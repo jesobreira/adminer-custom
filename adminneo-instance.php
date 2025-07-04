@@ -11,6 +11,44 @@ class CustomAdmin extends \AdminNeo\Admin
 // Define configuration.
 $config = include("./config.php");
 
+if (isset($config['colorMode'])) {
+    $colormode = $config['colorMode'];
+
+    if ($colormode === 'dark') {
+        if (file_exists("./adminneo-light.css")) {
+            unlink("./adminneo-light.css");
+        }
+        if (!file_exists("./adminneo-dark.css")) {
+            file_put_contents("./adminneo-dark.css", "");
+        }
+    }
+    else if ($colormode === "light") {
+        if (file_exists("./adminneo-dark.css")) {
+            unlink("./adminneo-dark.css");
+        }
+        if (!file_exists("./adminneo-light.css")) {
+            file_put_contents("./adminneo-light.css", "");
+        }
+    }
+    else {
+        // auto
+        if (file_exists("./adminneo-light.css")) {
+            unlink("./adminneo-light.css");
+        }
+        if (file_exists("./adminneo-dark.css")) {
+            unlink("./adminneo-dark.css");
+        }
+    }
+} else {
+    // auto
+    if (file_exists("./adminneo-light.css")) {
+        unlink("./adminneo-light.css");
+    }
+    if (file_exists("./adminneo-dark.css")) {
+        unlink("./adminneo-dark.css");
+    }
+}
+
 // Enable plugins.
 $plugins = [
     new \AdminNeo\JsonPreviewPlugin(),
