@@ -1,15 +1,15 @@
 <?php
 
+$config = include("./config.php");
+
 class CustomAdmin extends \AdminNeo\Admin
 {
     public function getServiceTitle()
     {
-        return "DB";
+        global $config;
+        return $config['name'] ?? 'DB';
     }
 }
-
-// Define configuration.
-$config = include("./config.php");
 
 if (isset($config['colorMode'])) {
     $colormode = $config['colorMode'];
