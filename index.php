@@ -566,7 +566,7 @@ relative_uri(){return
 str_replace(":","%3a",preg_replace('~^[^?]*/([^?]*)~','\1',$_SERVER["REQUEST_URI"]));}function
 remove_from_uri($Fh=""){return
 substr(preg_replace("~(?<=[?&])($Fh".(sid()?"":"|".session_name()).")=[^&]*&~",'',relative_uri()."&"),0,-1);}function
-pagination($D,$vc){return"<li>".($D==$vc?"<strong>".($D+1)."</strong>":'<a href="'.h(remove_from_uri("page").($D?"&page=$D".($_GET["next"]?"&next=".urlencode($_GET["next"]):""):"")).'">'.($D+1)."</a>")."</li>";}function
+pagination($D,$vc){return"<li>".($D==$vc?"<strong>".($D+1)."</strong>":'<a href="'.h(remove_from_uri("page").(is_numeric($D)?"&page=$D".($_GET["next"]?"&next=".urlencode($_GET["next"]):""):"")).'">'.($D+1)."</a>")."</li>";}function
 get_file($y,$Cc=false,$Jc=""){$o=$_FILES[$y];if(!$o)return
 null;foreach($o
 as$y=>$X)$o[$y]=(array)$X;$I='';foreach($o["error"]as$y=>$l){if($l)return$l;$C=$o["name"][$y];$Xk=$o["tmp_name"][$y];$jc=file_get_contents($Cc&&preg_match('~\.gz$~',$C)?"compress.zlib://$Xk":$Xk);if($Cc){$bk=substr($jc,0,3);if(function_exists("iconv")&&preg_match("~^\xFE\xFF|^\xFF\xFE~",$bk))$jc=iconv("utf-16","utf-8",$jc);elseif($bk=="\xEF\xBB\xBF")$jc=substr($jc,3);}if($Jc){if(!preg_match("~$Jc\\s*\$~",$jc))$jc
