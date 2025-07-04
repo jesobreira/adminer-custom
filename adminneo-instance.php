@@ -9,12 +9,7 @@ class CustomAdmin extends \AdminNeo\Admin
 }
 
 // Define configuration.
-$config = [
-    "colorVariant" => "green",
-    "navigationMode" => "dual",
-    "preferSelection" => true,
-    "recordsPerPage" => 70,
-];
+$config = include("./config.php");
 
 // Enable plugins.
 $plugins = [
