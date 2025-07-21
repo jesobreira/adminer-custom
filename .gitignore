@@ -1,2 +1,2 @@
-logs/*
-!logs/.htaccess
+adminer.css
+adminer-dark.css
