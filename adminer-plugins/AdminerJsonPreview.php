@@ -54,7 +54,7 @@ class AdminerJsonPreview
                 border-spacing: 0;
                 margin: 4px 0;
                 border: 1px solid #999;
-                font-size: 110%;
+                font-size: 80%;
             }
 
             .json tr {
@@ -130,43 +130,13 @@ class AdminerJsonPreview
             .nojs .json {
                 display: table !important;
             }
+
+            code:has(> span > details),
+            code > span:has(> details) {
+              padding: unset !important;
+            }
+
         </style>
-
-        <script <?php echo Adminer\nonce(); ?>>
-            (function(document) {
-                "use strict";
-
-                document.addEventListener("DOMContentLoaded", init, false);
-
-                function init() {
-                    const links = document.querySelectorAll('a.json-icon');
-
-                    for (let i = 0; i < links.length; i++) {
-                        console.log(links[i])
-                        links[i].onclick = function(event) {
-                            event.preventDefault();
-                            event.stopPropagation();
-                            toggleJson(this);
-                        };
-                    }
-                }
-
-                function toggleJson(button) {
-                    const index = button.dataset.index;
-alert(index);
-                    const obj = document.getElementById("json-code-" + index);
-                    if (!obj) return;
-
-                    if (obj.style.display === "none") {
-                        button.className += " json-up";
-                        obj.style.display = "";
-                    } else {
-                        button.className = button.className.replace(" json-up", "");
-                        obj.style.display = "none";
-                    }
-                }
-            })(document);
-        </script>
 
         <?php
     }
@@ -185,20 +155,6 @@ alert(index);
                 $val .= $this->convertJson($json, 1, $counter++);
             }
             $val .= "</details>";
-        }
-    }
-
-    public function editInput($table, array $field, $attrs, $value)
-    {
-        static $counter = 1;
-
-        if (!$this->inEdit) {
-            return;
-        }
-
-        if ($this->isJson($field, $value) && ($json = json_decode($value, true)) !== null && is_array($json)) {
-            echo "<a class='icon json-icon json-link' href='#' title='JSON' data-index='$counter'><span>View</span></a><br/>";
-            echo $this->convertJson($json, 1, $counter++);
         }
     }
 
