@@ -291,7 +291,7 @@ var HtmlGenerator = /** @class */ (function () {
     }
     /** Creates modal div with corresponding styling and basic functionality (closing button, more may be added later) */
     HtmlGenerator.prototype.getModalElement = function () {
-        var modal = HtmlGenerator._getTemplateAsElement('<div id="tree-modal" style="position:fixed; top:50px; left:50px; width:calc(100% - 100px);height:calc(100% - 100px);background:rgb(132, 132, 132); border:1px solid; display:none">' +
+        var modal = HtmlGenerator._getTemplateAsElement('<div id="tree-modal" style="position:fixed; top:50px; left:50px; width:calc(100% - 100px);height:calc(100% - 100px);background:rgba(132, 132, 132, 0.7); backdrop-filter: blur(5px); border:1px solid; display:none">' +
             '   <h1>' +
             '       <span class="title">Tree browser</span>' +
             '       <a class="close" href="#!" style="float:right;">Close</a>' +
