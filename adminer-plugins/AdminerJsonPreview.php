@@ -142,16 +142,18 @@ class AdminerJsonPreview
                     const links = document.querySelectorAll('a.json-icon');
 
                     for (let i = 0; i < links.length; i++) {
-                        links[i].addEventListener("click", function(event) {
+                        console.log(links[i])
+                        links[i].onclick = function(event) {
                             event.preventDefault();
+                            event.stopPropagation();
                             toggleJson(this);
-                        }, false);
+                        };
                     }
                 }
 
                 function toggleJson(button) {
                     const index = button.dataset.index;
-
+alert(index);
                     const obj = document.getElementById("json-code-" + index);
                     if (!obj) return;
 
@@ -178,10 +180,11 @@ class AdminerJsonPreview
         }
 
         if ($this->isJson($field, $original) && ($json = json_decode($original, true)) !== null) {
-            $val = "<a class='icon json-icon' href='#' title='JSON' data-index='$counter'>JSON</a> " . $val;
+            $val = "<details><summary>" . $val . "</summary>";
             if (is_array($json)) {
                 $val .= $this->convertJson($json, 1, $counter++);
             }
+            $val .= "</details>";
         }
     }
 
@@ -194,7 +197,7 @@ class AdminerJsonPreview
         }
 
         if ($this->isJson($field, $value) && ($json = json_decode($value, true)) !== null && is_array($json)) {
-            echo "<a class='icon json-icon json-link' href='#' title='JSON' data-index='$counter'><span>JSON</span></a><br/>";
+            echo "<a class='icon json-icon json-link' href='#' title='JSON' data-index='$counter'><span>View</span></a><br/>";
             echo $this->convertJson($json, 1, $counter++);
         }
     }
@@ -210,7 +213,7 @@ class AdminerJsonPreview
 
         $value .= "<table class='json'";
         if ($level === 1 && $id > 0) {
-            $value .= "style='display: none' id='json-code-$id'";
+            $value .= " id='json-code-$id'";
         }
         $value .= ">";
 
@@ -260,5 +263,9 @@ class AdminerJsonPreview
         return $this->maxTextLength > 0 && mb_strlen($value, "UTF-8") > $this->maxTextLength
             ? mb_substr($value, 0, $this->maxTextLength - 1, "UTF-8") . "…"
             : $value;
+    }
+
+    public function navigation() {
+        $this->head();
     }
 }
