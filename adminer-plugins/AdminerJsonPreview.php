@@ -43,7 +43,6 @@ class AdminerJsonPreview
             $this->maxTextLength = $maxTextLength;
         }
     }
-    }
 
     /**
      * Prints HTML code inside <head>.
