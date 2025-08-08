@@ -10,7 +10,8 @@
  */
 class AdminerJsonPreview
 {
-    const MAX_TEXT_LENGTH = 100;
+    // Default max text length, can be overridden via constructor
+    private static $defaultMaxTextLength = 100;
 
     /** @var int */
     private $maxLevel;
@@ -31,12 +32,17 @@ class AdminerJsonPreview
      * @param int $maxTextLength Maximal length of string values. Longer texts will be truncated with ellipsis sign '…'.
      *                           0 means no limit.
      */
-    public function __construct($maxLevel = 0, $inTable = true, $inEdit = true, $maxTextLength = self::MAX_TEXT_LENGTH)
+    public function __construct($maxLevel = 0, $inTable = true, $inEdit = true, $maxTextLength = null)
     {
         $this->maxLevel = $maxLevel;
         $this->inTable = $inTable;
         $this->inEdit = $inEdit;
-        $this->maxTextLength = $maxTextLength;
+        if ($maxTextLength === null) {
+            $this->maxTextLength = isset($_GET['text_length']) ? (int) $_GET['text_length'] : self::$defaultMaxTextLength;
+        } else {
+            $this->maxTextLength = $maxTextLength;
+        }
+    }
     }
 
     /**
