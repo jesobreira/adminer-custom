@@ -1,12 +1,12 @@
 <?php
 
 /**
- * Displays JSON preview as a table.
+ * Displays JSON preview as a table (only if JSON length ≤ maxTextLength).
  *
  * @link https://github.com/pematon/adminer-plugins
  *
- * @author Peter Knut
- * @copyright 2014-2018 Pematon, s.r.o. (http://www.pematon.com/)
+ * Original author: Peter Knut
+ * Modified: respects maxTextLength by gating preview instead of truncating
  */
 class AdminerJsonPreview
 {
@@ -26,11 +26,10 @@ class AdminerJsonPreview
     private $maxTextLength;
 
     /**
-     * @param int $maxLevel Max. level in recursion. 0 means no limit.
-     * @param bool $inTable Whether apply JSON preview in selection table.
-     * @param bool $inEdit Whether apply JSON preview in edit form.
-     * @param int $maxTextLength Maximal length of string values. Longer texts will be truncated with ellipsis sign '…'.
-     *                           0 means no limit.
+     * @param int  $maxLevel      Max. level in recursion. 0 means no limit.
+     * @param bool $inTable       Whether apply JSON preview in selection table.
+     * @param bool $inEdit        Whether apply JSON preview in edit form.
+     * @param int  $maxTextLength Max length of ORIGINAL JSON string. 0 = no limit.
      */
     public function __construct($maxLevel = 0, $inTable = true, $inEdit = true, $maxTextLength = null)
     {
@@ -154,12 +153,19 @@ class AdminerJsonPreview
             return;
         }
 
-        if ($this->isJson($field, $original) && ($json = json_decode($original, true)) !== null) {
-            $val = "<details><summary>" . $val . "</summary>";
-            if (is_array($json)) {
-                $val .= $this->convertJson($json, 1, $counter++);
+        // Only render preview if it's JSON AND within the allowed length (unless maxTextLength==0)
+        if ($this->isJson($field, $original)) {
+            $json = json_decode($original, true);
+            if ($json !== null) {
+                $lenOk = ($this->maxTextLength == 0) || (mb_strlen($original, "UTF-8") <= $this->maxTextLength);
+                if ($lenOk) {
+                    $val = "<details><summary>" . $val . "</summary>";
+                    if (is_array($json)) {
+                        $val .= $this->convertJson($json, 1, $counter++);
+                    }
+                    $val .= "</details>";
+                }
             }
-            $val .= "</details>";
         }
     }
 
@@ -185,25 +191,18 @@ class AdminerJsonPreview
             if (is_array($val) && ($this->maxLevel <= 0 || $level < $this->maxLevel)) {
                 $value .= $this->convertJson($val, $level + 1);
             } elseif (is_array($val)) {
-                // Shorten encoded JSON to max. length.
-                $val = $this->truncate(json_encode($val));
-
-                $value .= "<code class='jush-js'>" . Adminer\h(preg_replace('/([,:])([^\s])/', '$1 $2', $val)) . "</code>";
+                // Reached maxLevel: show as JSON one-liner (no truncation).
+                $encoded = json_encode($val);
+                $value .= "<code class='jush-js'>" . Adminer\h(preg_replace('/([,:])([^\s])/', '$1 $2', $encoded)) . "</code>";
             } elseif (is_string($val)) {
-                // Shorten string to max. length.
-                $val = $this->truncate($val);
-
-                // Add extra new line to make it visible in HTML output.
+                // Show string as-is (no truncation). Add newline visibility tweak if needed.
                 if (preg_match("@\n$@", $val)) {
                     $val .= "\n";
                 }
-
                 $value .= "<code>" . nl2br(Adminer\h($val)) . "</code>";
             } elseif (is_bool($val)) {
-                // Handle boolean values.
                 $value .= "<code class='jush'>" . Adminer\h($val ? "true" : "false") . "</code>";
             } elseif (is_null($val)) {
-                // Handle null value.
                 $value .= "<code class='jush'>null</code>";
             } else {
                 $value .= "<code class='jush'>" . Adminer\h($val) . "</code>";
@@ -211,7 +210,7 @@ class AdminerJsonPreview
         }
 
         if (empty($json)) {
-            $value .= "<tr><td>   </td></tr>";
+            $value .= "<tr><td>   </td></tr>";
         }
 
         $value .= "</table>";
@@ -219,12 +218,7 @@ class AdminerJsonPreview
         return $value;
     }
 
-    private function truncate($value)
-    {
-        return $this->maxTextLength > 0 && mb_strlen($value, "UTF-8") > $this->maxTextLength
-            ? mb_substr($value, 0, $this->maxTextLength - 1, "UTF-8") . "…"
-            : $value;
-    }
+    // No truncate(): gating by length happens in selectVal() before rendering.
 
     public function navigation() {
         $this->head();
